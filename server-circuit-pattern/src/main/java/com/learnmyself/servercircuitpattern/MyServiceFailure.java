@@ -5,7 +5,6 @@ import com.netflix.hystrix.HystrixCommandKey;
 import com.netflix.hystrix.HystrixCommandMetrics;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
-import com.netflix.hystrix.exception.HystrixTimeoutException;
 import com.netflix.hystrix.util.HystrixRollingNumberEvent;
 import org.springframework.stereotype.Service;
 
@@ -30,13 +29,11 @@ public class MyServiceFailure {
                     @HystrixProperty(name = "circuitBreaker.errorThresholdPercentage", value = "70"),
                     @HystrixProperty(name = "circuitBreaker.sleepWindowInMilliseconds", value = "3000"),
                     @HystrixProperty(name = "metrics.rollingStats.timeInMilliseconds", value = "7000"),
-            }
-    )
-
+            })
     public void doSomething(int input) {
         System.out.println(new Date() + " main method the input: " + (input + 1));
-        //in case of exception fallbackMethod is called
-        //System.out.println("output: " + 10 / input);
+        // in case of exception fallbackMethod is called
+        // System.out.println("output: " + 10 / input);
 
         if (input % 10 < 8) {
             int a = input / 0;
@@ -71,22 +68,22 @@ public class MyServiceFailure {
         System.out.println();
     }
 
-//    public void defaultDoSomething(int input, int count) {
-//        try {
-//            HystrixCommandKey key = HystrixCommandKey.Factory.asKey("doSomething");
-//            HystrixCircuitBreaker breaker = HystrixCircuitBreaker.Factory.getInstance(key);
-//            HystrixCommandMetrics metrics = HystrixCommandMetrics.getInstance(key);
-//            System.out.println(getHystrixMetrics());
-//            boolean isOpen = breaker.isOpen();
-//            if (isOpen) {
-//                System.out.println("=== OPEN CIRCUIT BREAKER ===");
-//                tripped = true;
-//            }
-//            int a = 2 / 0;
-//        } catch (Exception ex) {
-//            System.out.println(String.format("Exception: %s", ex));
-//        }
-//    }
+    //    public void defaultDoSomething(int input, int count) {
+    //        try {
+    //            HystrixCommandKey key = HystrixCommandKey.Factory.asKey("doSomething");
+    //            HystrixCircuitBreaker breaker = HystrixCircuitBreaker.Factory.getInstance(key);
+    //            HystrixCommandMetrics metrics = HystrixCommandMetrics.getInstance(key);
+    //            System.out.println(getHystrixMetrics());
+    //            boolean isOpen = breaker.isOpen();
+    //            if (isOpen) {
+    //                System.out.println("=== OPEN CIRCUIT BREAKER ===");
+    //                tripped = true;
+    //            }
+    //            int a = 2 / 0;
+    //        } catch (Exception ex) {
+    //            System.out.println(String.format("Exception: %s", ex));
+    //        }
+    //    }
 
     public Map<String, Object> getHystrixMetrics() {
         Map<String, Object> result = new HashMap<>();
@@ -103,14 +100,17 @@ public class MyServiceFailure {
             result.put("success", metrics.getRollingCount(HystrixRollingNumberEvent.SUCCESS));
             result.put("timeout", metrics.getRollingCount(HystrixRollingNumberEvent.TIMEOUT));
             result.put("failure", metrics.getRollingCount(HystrixRollingNumberEvent.FAILURE));
-//            result.put("totalRequest", counts.getTotalRequests());
-//            result.put("health", counts.toString());
-//            metricsMap.put("shortCircuited", metrics.getRollingCount(HystrixRollingNumberEvent.SHORT_CIRCUITED));
-//            metricsMap.put("threadPoolRejected", metrics.getRollingCount(HystrixRollingNumberEvent.THREAD_POOL_REJECTED));
-//            metricsMap.put("semaphoreRejected", metrics.getRollingCount(HystrixRollingNumberEvent.SEMAPHORE_REJECTED));
-//            metricsMap.put("latency50", metrics.getTotalTimePercentile(50));
-//            metricsMap.put("latency90", metrics.getTotalTimePercentile(90));
-//            metricsMap.put("latency100", metrics.getTotalTimePercentile(100));
+            //            result.put("totalRequest", counts.getTotalRequests());
+            //            result.put("health", counts.toString());
+            //            metricsMap.put("shortCircuited",
+            //            metrics.getRollingCount(HystrixRollingNumberEvent.SHORT_CIRCUITED));
+            //            metricsMap.put("threadPoolRejected",
+            //            metrics.getRollingCount(HystrixRollingNumberEvent.THREAD_POOL_REJECTED));
+            //            metricsMap.put("semaphoreRejected",
+            //            metrics.getRollingCount(HystrixRollingNumberEvent.SEMAPHORE_REJECTED));
+            //            metricsMap.put("latency50", metrics.getTotalTimePercentile(50));
+            //            metricsMap.put("latency90", metrics.getTotalTimePercentile(90));
+            //            metricsMap.put("latency100", metrics.getTotalTimePercentile(100));
         }
         return result;
     }

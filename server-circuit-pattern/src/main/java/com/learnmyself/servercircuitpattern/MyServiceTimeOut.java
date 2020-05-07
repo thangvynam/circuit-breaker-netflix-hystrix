@@ -5,7 +5,6 @@ import com.netflix.hystrix.HystrixCommandKey;
 import com.netflix.hystrix.HystrixCommandMetrics;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
-import com.netflix.hystrix.exception.HystrixTimeoutException;
 import com.netflix.hystrix.util.HystrixRollingNumberEvent;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -15,7 +14,6 @@ import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.params.BasicHttpParams;
@@ -23,7 +21,6 @@ import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.Date;
@@ -48,38 +45,48 @@ public class MyServiceTimeOut {
                     @HystrixProperty(name = "circuitBreaker.errorThresholdPercentage", value = "70"),
                     @HystrixProperty(name = "circuitBreaker.sleepWindowInMilliseconds", value = "7000"),
                     @HystrixProperty(name = "metrics.rollingStats.timeInMilliseconds", value = "10000"),
-                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "3000"),
+                    @HystrixProperty(
+                            name = "execution.isolation.thread.timeoutInMilliseconds",
+                            value = "3000"),
                     @HystrixProperty(name = "execution.timeout.enabled", value = "true"),
-                    @HystrixProperty(name = "execution.isolation.thread.interruptOnTimeout", value = "true")
-            }
-    )
+                    @HystrixProperty(
+                            name = "execution.isolation.thread.interruptOnTimeout",
+                            value = "true")
+            })
     public void doSomeThingTimeOut(int input) throws IOException, InterruptedException {
-        //System.out.println(new Date() + " main method the input: " + input + " | count: " + (input + 1));
+        // System.out.println(new Date() + " main method the input: " + input + " | count: " +
+        // (input + 1));
         System.out.println(new Date() + " Before -  process method : " + input);
         callHttpClient(2);
-        System.out.println("Thread" + Thread.currentThread().getName() + " is " + (Thread.currentThread().isInterrupted() ? "interrupted" : "not ainterrupted"));
+        System.out.println(
+                "Thread"
+                        + Thread.currentThread().getName()
+                        + " is "
+                        + (Thread.currentThread().isInterrupted()
+                        ? "interrupted"
+                        : "not ainterrupted"));
 
-//        if (input % 10 < 8) {
-//            try {
-//                //TimeUnit.MILLISECONDS.sleep(4000);
-//                Thread.sleep(4000);
-//            } catch (Exception ex) {
-//                System.out.println("Exception: " +  ex);
-//                return;
-//            }
-//            System.out.println("Hello");
-//        } else {
-//            if (tripped) {
-//                System.out.println(getHystrixMetrics());
-//                System.out.println("=== CLOSED CIRCUIT BREAKER ===");
-//            } else {
-//                System.out.println(getHystrixMetrics());
-//            }
-//        }
+        //        if (input % 10 < 8) {
+        //            try {
+        //                //TimeUnit.MILLISECONDS.sleep(4000);
+        //                Thread.sleep(4000);
+        //            } catch (Exception ex) {
+        //                System.out.println("Exception: " +  ex);
+        //                return;
+        //            }
+        //            System.out.println("Hello");
+        //        } else {
+        //            if (tripped) {
+        //                System.out.println(getHystrixMetrics());
+        //                System.out.println("=== CLOSED CIRCUIT BREAKER ===");
+        //            } else {
+        //                System.out.println(getHystrixMetrics());
+        //            }
+        //        }
     }
 
     private void callHttpClient(int type) throws IOException, InterruptedException {
-        if (type == 1)  {// CALL_API
+        if (type == 1) { // CALL_API
             try {
                 String uri = "http://localhost:9098/testapi";
                 HttpGet get = new HttpGet(uri);
@@ -91,26 +98,27 @@ public class MyServiceTimeOut {
         } else { // Thread sleep
             Thread.sleep(5000);
         }
-
     }
 
-    public void defaultDoSomethingTimeOut(int input, Throwable throwable) throws InterruptedException {
-//        HystrixCommandKey key = HystrixCommandKey.Factory.asKey("doSomethingTimeOut");
-//        HystrixCircuitBreaker breaker = HystrixCircuitBreaker.Factory.getInstance(key);
-//        HystrixCommandMetrics metrics = HystrixCommandMetrics.getInstance(key);
-//        System.out.println(getHystrixMetrics());
-//        boolean isOpen = breaker.isOpen();
-//        if (isOpen) {
-//            System.out.println("=== OPEN CIRCUIT BREAKER ===");
-//            tripped = true;
-//        }
-//
-//        if (throwable instanceof HystrixTimeoutException) {
-//            System.out.println("Message: " + throwable.toString());
-//        }
+    public void defaultDoSomethingTimeOut(int input, Throwable throwable)
+            throws InterruptedException {
+        //        HystrixCommandKey key = HystrixCommandKey.Factory.asKey("doSomethingTimeOut");
+        //        HystrixCircuitBreaker breaker = HystrixCircuitBreaker.Factory.getInstance(key);
+        //        HystrixCommandMetrics metrics = HystrixCommandMetrics.getInstance(key);
+        //        System.out.println(getHystrixMetrics());
+        //        boolean isOpen = breaker.isOpen();
+        //        if (isOpen) {
+        //            System.out.println("=== OPEN CIRCUIT BREAKER ===");
+        //            tripped = true;
+        //        }
+        //
+        //        if (throwable instanceof HystrixTimeoutException) {
+        //            System.out.println("Message: " + throwable.toString());
+        //        }
 
         TimeUnit.MILLISECONDS.sleep(1000);
-        System.out.println(new Date() + " fallback the input number: " + input + " | count: " + (input + 1));
+        System.out.println(
+                new Date() + " fallback the input number: " + input + " | count: " + (input + 1));
         System.out.println();
     }
 
@@ -129,14 +137,17 @@ public class MyServiceTimeOut {
             result.put("success", metrics.getRollingCount(HystrixRollingNumberEvent.SUCCESS));
             result.put("timeout", metrics.getRollingCount(HystrixRollingNumberEvent.TIMEOUT));
             result.put("failure", metrics.getRollingCount(HystrixRollingNumberEvent.FAILURE));
-//            result.put("totalRequest", counts.getTotalRequests());
-//            result.put("health", counts.toString());
-//            metricsMap.put("shortCircuited", metrics.getRollingCount(HystrixRollingNumberEvent.SHORT_CIRCUITED));
-//            metricsMap.put("threadPoolRejected", metrics.getRollingCount(HystrixRollingNumberEvent.THREAD_POOL_REJECTED));
-//            metricsMap.put("semaphoreRejected", metrics.getRollingCount(HystrixRollingNumberEvent.SEMAPHORE_REJECTED));
-//            metricsMap.put("latency50", metrics.getTotalTimePercentile(50));
-//            metricsMap.put("latency90", metrics.getTotalTimePercentile(90));
-//            metricsMap.put("latency100", metrics.getTotalTimePercentile(100));
+            //            result.put("totalRequest", counts.getTotalRequests());
+            //            result.put("health", counts.toString());
+            //            metricsMap.put("shortCircuited",
+            //            metrics.getRollingCount(HystrixRollingNumberEvent.SHORT_CIRCUITED));
+            //            metricsMap.put("threadPoolRejected",
+            //            metrics.getRollingCount(HystrixRollingNumberEvent.THREAD_POOL_REJECTED));
+            //            metricsMap.put("semaphoreRejected",
+            //            metrics.getRollingCount(HystrixRollingNumberEvent.SEMAPHORE_REJECTED));
+            //            metricsMap.put("latency50", metrics.getTotalTimePercentile(50));
+            //            metricsMap.put("latency90", metrics.getTotalTimePercentile(90));
+            //            metricsMap.put("latency100", metrics.getTotalTimePercentile(100));
         }
         return result;
     }
@@ -154,8 +165,9 @@ public class MyServiceTimeOut {
         schemeRegistry.register(new Scheme("http", 80, PlainSocketFactory.getSocketFactory()));
         schemeRegistry.register(new Scheme("https", 443, sf));
 
-        //Initialize the http connection pooling
-        PoolingClientConnectionManager connectionManager = new PoolingClientConnectionManager(schemeRegistry);
+        // Initialize the http connection pooling
+        PoolingClientConnectionManager connectionManager =
+                new PoolingClientConnectionManager(schemeRegistry);
 
         // Initialize the connection parameters for performance tuning
         connectionManager.setMaxTotal(12);
@@ -163,7 +175,12 @@ public class MyServiceTimeOut {
 
         final int timeout = 3;
         RequestConfig requestConfig =
-                RequestConfig.custom().setSocketTimeout(timeout * 1000).setConnectTimeout(timeout * 1000).setConnectionRequestTimeout(timeout * 1000).setStaleConnectionCheckEnabled(true).build();
+                RequestConfig.custom()
+                        .setSocketTimeout(timeout * 1000)
+                        .setConnectTimeout(timeout * 1000)
+                        .setConnectionRequestTimeout(timeout * 1000)
+                        .setStaleConnectionCheckEnabled(true)
+                        .build();
         return HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
     }
 }

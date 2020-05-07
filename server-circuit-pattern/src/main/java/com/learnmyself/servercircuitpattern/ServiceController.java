@@ -1,6 +1,5 @@
 package com.learnmyself.servercircuitpattern;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,7 +28,7 @@ public class ServiceController {
     public String getInfo() throws InterruptedException {
         int n = 20;
         System.out.println("Start time: " + new Date());
-        for (int i = 0 ; i < n; i++) {
+        for (int i = 0; i < n; i++) {
             myServiceFailure.doSomething(i);
             TimeUnit.MILLISECONDS.sleep(1000);
         }
@@ -41,16 +40,15 @@ public class ServiceController {
     public String getInfoTimeOut() throws IOException, InterruptedException {
         int n = 20;
         System.out.println("Start time: " + new Date());
-        for (int i = 0 ; i < n; i++) {
+        for (int i = 0; i < n; i++) {
             try {
                 myServiceTimeOut.doSomeThingTimeOut(i);
             } catch (Exception ex) {
                 System.out.println(new Date() + " [ERROR] ex: " + ex);
             }
-            //TimeUnit.MILLISECONDS.sleep(1000);
+            // TimeUnit.MILLISECONDS.sleep(1000);
         }
         System.out.println("End time: " + new Date());
         return "namtv3";
     }
-
 }

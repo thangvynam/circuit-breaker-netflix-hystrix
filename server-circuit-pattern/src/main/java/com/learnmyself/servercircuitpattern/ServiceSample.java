@@ -22,13 +22,16 @@ public class ServiceSample {
     @HystrixCommand(fallbackMethod = "callMethod_Fallback")
     public String callOtherService() {
         System.out.println("Call main method");
-        String response = restTemplate.exchange(
-                "http://localhost:9000/testcircuit",
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<String>() {
-                }, ""
-        ).getBody();
+        String response =
+                restTemplate
+                        .exchange(
+                                "http://localhost:9000/testcircuit",
+                                HttpMethod.GET,
+                                null,
+                                new ParameterizedTypeReference<String>() {
+                                },
+                                "")
+                        .getBody();
 
         return response;
     }
