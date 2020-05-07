@@ -88,12 +88,6 @@ public class MyServiceTimeOut {
             } catch (Exception ex) {
                 System.out.println(new Date() + " ERROR" + ex);
             }
-
-
-
-//        RestTemplate restTemplate = new RestTemplate();
-//        String response = restTemplate.getForObject(uri, String.class);
-//        System.out.println(response);
         } else { // Thread sleep
             Thread.sleep(5000);
         }
@@ -128,13 +122,15 @@ public class MyServiceTimeOut {
         if (metrics != null) {
             HystrixCommandMetrics.HealthCounts counts = metrics.getHealthCounts();
             HystrixCircuitBreaker circuitBreaker = HystrixCircuitBreaker.Factory.getInstance(key);
-//            result.put("health", counts.toString());
+
             result.put("circuitOpen", circuitBreaker.isOpen());
-//            result.put("totalRequest", counts.getTotalRequests());
+
             result.put("errorPercentage", counts.getErrorPercentage());
             result.put("success", metrics.getRollingCount(HystrixRollingNumberEvent.SUCCESS));
             result.put("timeout", metrics.getRollingCount(HystrixRollingNumberEvent.TIMEOUT));
             result.put("failure", metrics.getRollingCount(HystrixRollingNumberEvent.FAILURE));
+//            result.put("totalRequest", counts.getTotalRequests());
+//            result.put("health", counts.toString());
 //            metricsMap.put("shortCircuited", metrics.getRollingCount(HystrixRollingNumberEvent.SHORT_CIRCUITED));
 //            metricsMap.put("threadPoolRejected", metrics.getRollingCount(HystrixRollingNumberEvent.THREAD_POOL_REJECTED));
 //            metricsMap.put("semaphoreRejected", metrics.getRollingCount(HystrixRollingNumberEvent.SEMAPHORE_REJECTED));
@@ -146,30 +142,28 @@ public class MyServiceTimeOut {
     }
 
     private HttpClient getHttpClinent() {
-        HttpClient httpClient = null;
         HttpParams httpParams = new BasicHttpParams();
+
         httpParams.setParameter(CoreProtocolPNames.USE_EXPECT_CONTINUE, Boolean.TRUE);
         httpParams.setParameter(CoreProtocolPNames.USER_AGENT, "ABC");
-        HttpConnectionParams.setConnectionTimeout(httpParams, 2000);
 
         HttpConnectionParams.setStaleCheckingEnabled(httpParams, Boolean.TRUE);
-
         SSLSocketFactory sf = SSLSocketFactory.getSocketFactory();
 
         SchemeRegistry schemeRegistry = new SchemeRegistry();
         schemeRegistry.register(new Scheme("http", 80, PlainSocketFactory.getSocketFactory()));
         schemeRegistry.register(new Scheme("https", 443, sf));
 
-//Initialize the http connection pooling
+        //Initialize the http connection pooling
         PoolingClientConnectionManager connectionManager = new PoolingClientConnectionManager(schemeRegistry);
 
-// Initialize the connection parameters for performance tuning
+        // Initialize the connection parameters for performance tuning
         connectionManager.setMaxTotal(12);
         connectionManager.setDefaultMaxPerRoute(10);
+
         final int timeout = 3;
         RequestConfig requestConfig =
                 RequestConfig.custom().setSocketTimeout(timeout * 1000).setConnectTimeout(timeout * 1000).setConnectionRequestTimeout(timeout * 1000).setStaleConnectionCheckEnabled(true).build();
         return HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
-        //return new DefaultHttpClient(connectionManager, httpParams);
     }
 }

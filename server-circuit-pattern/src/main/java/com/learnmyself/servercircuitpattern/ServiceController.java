@@ -25,16 +25,6 @@ public class ServiceController {
     @Autowired
     private MyServiceTimeOut myServiceTimeOut;
 
-//    @RequestMapping(value = "/testcircuit/failure", method = RequestMethod.GET)
-//    public String testInteruption() {
-//        try {
-//            return throw InterruptedException;
-//        } catch (InterruptedException ex) {
-//
-//        }
-//        return StringUtils.EMPTY;
-//    }
-
     @RequestMapping(value = "/testcircuit/failure", method = RequestMethod.GET)
     public String getInfo() throws InterruptedException {
         int n = 20;

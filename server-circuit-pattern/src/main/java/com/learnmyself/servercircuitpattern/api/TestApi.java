@@ -14,6 +14,6 @@ public class TestApi {
     @RequestMapping(value = "/testapi", method = RequestMethod.GET)
     public String testApi() throws InterruptedException {
         Thread.sleep(5000);
-        return "namtv333";
+        return "test";
     }
 }

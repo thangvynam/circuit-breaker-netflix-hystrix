@@ -96,13 +96,15 @@ public class MyServiceFailure {
         if (metrics != null) {
             HystrixCommandMetrics.HealthCounts counts = metrics.getHealthCounts();
             HystrixCircuitBreaker circuitBreaker = HystrixCircuitBreaker.Factory.getInstance(key);
-//            result.put("health", counts.toString());
+
             result.put("circuitOpen", circuitBreaker.isOpen());
-//            result.put("totalRequest", counts.getTotalRequests());
+
             result.put("errorPercentage", counts.getErrorPercentage());
             result.put("success", metrics.getRollingCount(HystrixRollingNumberEvent.SUCCESS));
             result.put("timeout", metrics.getRollingCount(HystrixRollingNumberEvent.TIMEOUT));
             result.put("failure", metrics.getRollingCount(HystrixRollingNumberEvent.FAILURE));
+//            result.put("totalRequest", counts.getTotalRequests());
+//            result.put("health", counts.toString());
 //            metricsMap.put("shortCircuited", metrics.getRollingCount(HystrixRollingNumberEvent.SHORT_CIRCUITED));
 //            metricsMap.put("threadPoolRejected", metrics.getRollingCount(HystrixRollingNumberEvent.THREAD_POOL_REJECTED));
 //            metricsMap.put("semaphoreRejected", metrics.getRollingCount(HystrixRollingNumberEvent.SEMAPHORE_REJECTED));
